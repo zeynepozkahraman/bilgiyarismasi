@@ -1,0 +1,142 @@
+from random import randrange
+import time
+import random
+import RPi.GPIO as GPIO
+i = 0
+j=1
+dogrusayisi=0
+yanlissayisi=0
+
+print " *************************************************"
+print " *            //        BILGI      \\\            *"
+print " *            ||       YARISMASI    ||            *"
+print " *            \\\        2019       //            *"
+print " *************************************************"
+print ("\nYarismaya baslayalim., Sana 5 soru sorucaz\n\
+Her sorunun dort sikki var ve yalnizca bir tanesi dogru.\n\
+Sanslisin ki 1 tane de joker hakkin var bu joker hakkiyla \n\
+ sana sordugumuz soruyu sorup onun fikrinide alabilirsin...\n\
+joker hakkini kullanman icin cevap kismina" )
+print("\033[36m arkadas \033[0m")
+print("yazman yeterli..")
+
+
+print("BILGI YARISMASI BASLIYOR...")
+def blink (pin):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin,GPIO.OUT)
+
+    GPIO.output(pin,GPIO.HIGH)
+    time.sleep(2)
+    GPIO.output(pin,GPIO.LOW)
+    time.sleep(2)
+def arama(metin, t):
+    print("\n\n %s" %metin)
+
+    for i in range(t):
+        print("."),
+        time.sleep(1)
+
+
+
+while i < 5:
+    sorular = [
+
+        "2048 GB kac TB dir?",
+        "Anakartin beynini olusturan entegre devre hangisidir?",
+        " Asagidakilerden hangisi islemciyi olusturan birimlerden birisi degildir?",
+        " Standart bir PC guc kaynagindan ortalama ne kadar guc ihtiyaci duyar?",
+        " Hangisi en hizli porttur?",
+        "Poke-Yoke ilkesi hangisidir?",
+        "Bir arastirmada elde edilmis olan veri oncelikle hangi isleme tabi tutulmalidir?",
+        "Bilimde cok sayida deney ve gozlemden sonra ayni sartlarda ayni sonuclari verdigi kesin olarak belirlenen durum seklinde tanimlanan kavram asagidakilerden hangisidir?",
+        "Arastirma evrenini temsil eden kucuk bir model olusturulmasi yontemi seklinde tanimlanan kavram asagidakilerden hangisidir?",
+        "1 byte kac bitten olusur?",
+       "Elektrik kesilince son yazilan bilgilerin kaybolmasinin sebebi hangisidir?",
+       "3072 mb kac gb eder?"]
+
+    cevaplar= [
+        ["2", "4", "6", "5"],
+        ["ISA", "Veri Yolu", "Yonga Seti", "PCI"],
+        ["Cache", "Aritmetik Mantik Birimi", "Sistem Birimi", "Kontrol Birimi"],
+        ["200-250 W", "300-350 W", "100-150 W", "250-300 W"],
+        ["USB", "VGA", "Firewire", "Paralel"],
+        ["7 gruplu bilgi hatirlanir","Azaltilamayan karmasiklik ","Istenmeyen hatalardan kacinmak","Farkli olan farkedilir"],
+        ["edit etme","guncelleme","kodlama","analiz"],
+        ["Bilimsel Yasa","olgu","kuram","hipotez"],
+        ["degisken","ornekleme","veri","gozlem"],
+        ["3","6","8","10"],
+        ["hardisk uzerinden bilginin okunur hal deolmasi","dosyanin acik olmasi","bilgilerin ram uzerinde olmasi","birden fazla programin acik olmasi"],
+        ["9","3","6","1"]
+    ]
+
+    dogrular= [0, 2 ,2,3,2,2,0,0,1,2,2,1]
+
+    secilensayi= randrange(0, len(sorular))
+
+    print(sorular[secilensayi])
+
+    answer = cevaplar[secilensayi]
+
+    inscrease = 0
+
+    for correctAns in answer:
+        if inscrease == 0:
+            correctAnsx = "A) "
+        elif inscrease == 1:
+            correctAnsx = "B) "
+        elif inscrease == 2:
+            correctAnsx = "C) "
+        elif inscrease == 3:
+            correctAnsx = "D) "
+
+        print(str(correctAnsx) + str(correctAns))
+        inscrease = inscrease + 1
+    cevap=raw_input("cevap:")
+    blink(27)
+    if cevap == "arkadas":
+        if j ==1:
+            j = 2
+            arama("Arkadasin araniyor", 3)
+            dizi=["A","B","C","D"]
+            b=random.randint(0,3)
+            print "\n arkadasinin cevabi %s " %dizi[b]
+            cevap = raw_input("cevap:")
+            blink(27)
+            if cevap == "A" or cevap == "a":
+               userAns = 0
+            elif cevap == "B" or cevap == "b":
+               userAns = 1
+            elif cevap == "C" or cevap == "c":
+               userAns = 2
+            elif cevap == "D" or cevap == "d":
+               userAns = 3
+
+
+
+
+        else:
+            print("arkadas jokerini kullanmistiniz..")
+            cevap = raw_input("cevap:")
+            blink(27)
+    elif cevap == "A" or cevap == "a":
+        userAns = 0
+    elif cevap == "B" or cevap == "b":
+        userAns = 1
+    elif cevap == "C" or cevap == "c":
+        userAns = 2
+    elif cevap == "D" or cevap == "d":
+        userAns = 3
+
+
+    if userAns == dogrular[secilensayi]:
+        print("\033[32m Dogru! \033[0m")
+        dogrusayisi+=1
+        blink(22)
+
+    else:
+        print("\033[31m Yanlis! \033[0m")
+        yanlissayisi+=1
+        blink(17)
+    i+=1
+print "Bu bilgi yarismasinda" ,dogrusayisi, "dogru",yanlissayisi, "yanlis yaptiniz..."
